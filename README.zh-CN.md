@@ -37,7 +37,70 @@ Desk Todo 是一张一直在那儿的小卡片，用来记下你在电脑上真�
 - Python 3.10+（64 位）
 - [PySide6](https://pypi.org/project/PySide6-Essentials/) 6.9+
 
-## 安装
+## 用 Claude Code 安装
+
+如果你在用 [Claude Code](https://claude.com/claude-code)，把下面这段 prompt 原样粘贴给它即可。它会先审查源码再运行任何东西，把依赖装在项目目录里（不动你的全局 Python），跑一遍测试，然后启动程序并给你讲解怎么用。
+
+```text
+Please install Desk Todo (https://github.com/zzkws/Desk-Todo) on this Windows PC. It is a small
+goal-list card pinned to the top-right corner of the desktop (Python + PySide6). Review it, install
+it, verify it and start it, step by step, and tell me what you find along the way.
+
+1. Check the environment
+   - Windows 10 or 11, git, and a 64-bit Python 3.10+ (`py -3 --version` or `python --version`).
+     If Python is missing or too old, stop and tell me how to install it. Don't install it yourself.
+
+2. Get the code
+   - Clone the repo into %USERPROFILE%\Desk-Todo unless I name another folder. The app keeps its data
+     in `data\` next to the program, so use a permanent location (not Downloads or a temp folder).
+
+3. Review before running anything
+   - Read every file in `desktodo\` (including `qml\Main.qml`), plus `desk_todo.pyw` and `launch.vbs`,
+     about 1,900 lines in total.
+   - Check that its behaviour matches this list, and report anything outside it before continuing:
+     * Network: only a local socket on 127.0.0.1:50573 (single-instance lock and "bring to front").
+     * Files: reads and writes only inside `data\`; reads %APPDATA%\DeskTodo\todos.json once if it
+       exists (migration from older versions); writes or deletes
+       %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\DeskTodo.vbs only when autostart is
+       toggled in the app.
+     * Win32: a global hotkey (Ctrl+Alt+T, falling back to Ctrl+Alt+Y / J), making the desktop
+       (Progman) the window's owner so "Show desktop" doesn't hide it, bringing the window forward.
+     * Processes: it relaunches itself if Explorer restarts; it opens the data folder in Explorer
+       when the user asks.
+
+4. Install dependencies without touching my global Python
+   - Run `pip install -r requirements.txt --target _vendor` with the Python from step 1.
+     `desk_todo.pyw` loads `_vendor\` automatically.
+
+5. Run the tests
+   - Create a throwaway venv: `python -m venv .venv`, `.venv\Scripts\pip install -r requirements-dev.txt`,
+     then `.venv\Scripts\python -m pytest -q`. The tests run headless and never touch real data, the
+     mouse or the keyboard. All of them should pass; if any fail, show me the output and stop.
+     You may delete `.venv` afterwards.
+
+6. Start it
+   - Run `launch.vbs` with `wscript`. If you are running inside a packaged app (for example the Claude
+     desktop app), start it from outside the app's container instead, otherwise later settings such as
+     autostart are written to a redirected copy of %APPDATA% and silently don't work:
+     Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = 'wscript.exe "<install folder>\launch.vbs"' }
+   - Verify: a pythonw.exe process is running desk_todo.pyw, `data\todos.json` exists and
+     `data\desk_todo.log` is empty. Don't move my mouse or press keys to test it; ask me to look at
+     the top-right corner of my screen instead.
+
+7. Hand over
+   - The interface is in Chinese. Explain the controls in my language: add with Ctrl+Alt+T or the input
+     box; click the circle to complete; hover a goal for archive (box icon) and delete (bin icon);
+     double-click to edit; drag to reorder; "⋯" for settings (开机自动启动 = start with Windows,
+     退出 = quit).
+   - Ask whether I want it to start with Windows. If so, tell me to switch it on from the "⋯" menu;
+     don't create the startup entry yourself.
+   - Tell me how to uninstall: turn off autostart, quit from the "⋯" menu, then delete the folder.
+
+Don't change the project's code, and don't enable autostart or install anything globally without
+asking me first.
+```
+
+## 手动安装
 
 ```powershell
 git clone https://github.com/zzkws/Desk-Todo.git
