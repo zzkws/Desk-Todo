@@ -39,7 +39,7 @@ The look borrows Claude's warm palette — ivory surfaces and a coral accent —
 
 ## Install with Claude Code
 
-Using [Claude Code](https://claude.com/claude-code)? Paste the prompt below into it. It will review the source before running anything, install the dependencies without touching your global Python, run the test suite, start the app and walk you through the controls. The interface is in Chinese, so it also explains the controls in your language.
+Using [Claude Code](https://claude.com/claude-code)? Copy the prompt below (copy button at the top-right of the block) and paste it in. It will review the source before running anything, install the dependencies without touching your global Python, run the test suite, start the app and walk you through the controls. The interface is in Chinese, so it also explains the controls in your language.
 
 ```text
 Please install Desk Todo (https://github.com/zzkws/Desk-Todo) on this Windows PC. It is a small
